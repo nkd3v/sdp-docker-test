@@ -1,0 +1,24 @@
+version: "3"
+services:
+  db:
+    image: "mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: db4dev$
+      MYSQL_DATABASE: db
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: db4dev$
+    volumes:
+      - db-dev:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  api:
+    build:
+      context: "api"
+    environment:
+      DATABASE_URL: "mysql+pymysql://admin:db4dev$@db/db"
+    ports:
+      - "8081:5000"
+    depends_on:
+      - db
+  
+volumes:
+  db-dev:
