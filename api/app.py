@@ -15,7 +15,7 @@ class User(db.Model):
     name = db.Column(db.String(50), nullable=False)
     age = db.Column(db.Integer, nullable=False)
 
-@app.route('/users', methods=['POST'])
+@app.route('/user/new', methods=['POST'])
 def create_user():
     data = request.json
     name = data['name']
@@ -25,15 +25,15 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({'message': 'User created successfully'}), 201
+    return jsonify({'uid': new_user.uid}), 201
 
-@app.route('/users', methods=['GET'])
+@app.route('/user', methods=['GET'])
 def get_users():
     users = User.query.all()
     user_list = [{'uid': user.uid, 'name': user.name, 'age': user.age} for user in users]
     return jsonify({'users': user_list})
 
-@app.route('/users/<string:uid>', methods=['GET'])
+@app.route('/user/<string:uid>', methods=['GET'])
 def get_user(uid):
     user = User.query.get(uid)
     if user:
@@ -42,7 +42,7 @@ def get_user(uid):
     else:
         return jsonify({'message': 'User not found'}), 404
 
-@app.route('/users/<string:uid>', methods=['PUT'])
+@app.route('/user/<string:uid>', methods=['PUT'])
 def update_user(uid):
     data = request.json
     name = data['name']
@@ -57,7 +57,7 @@ def update_user(uid):
     else:
         return jsonify({'message': 'User not found'}), 404
 
-@app.route('/users/<string:uid>', methods=['DELETE'])
+@app.route('/user/<string:uid>', methods=['DELETE'])
 def delete_user(uid):
     user = User.query.get(uid)
     if user:

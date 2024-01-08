@@ -1,24 +1,24 @@
 version: "3"
 services:
-  db:
+  db-test:
     image: "mysql"
     environment:
-      MYSQL_ROOT_PASSWORD: db4test$
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: db
       MYSQL_USER: admin
       MYSQL_PASSWORD: db4test$
     volumes:
-      - db-test:/var/lib/mysql
+      - mysql-test:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-  api:
+  api-test:
     build:
       context: "api"
     environment:
-      DATABASE_URL: "mysql+pymysql://admin:db4test$@db/db"
+      DATABASE_URL: "mysql+pymysql://admin:db4test$@db-test/db"
     ports:
       - "8082:5000"
     depends_on:
-      - db
+      - db-test
   
 volumes:
-  db-test:
+  mysql-test:
